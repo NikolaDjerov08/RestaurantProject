@@ -71,7 +71,7 @@
     else
     {
         <p class="text-muted-2 mb-3" style="font-size:.9rem;" data-menu-status>
-            Showing @((page.CurrentPage - 1) * page.PageSize + 1)–@(Math.Min(page.CurrentPage * page.PageSize, page.TotalCount)) of @page.TotalCount dishes
+            Showing @((page.CurrentPage - 1) * page.PageSize + 1)–@(Math.Min(page.CurrentPage * page.PageSize, page.TotalCount)) of @(page.TotalCount) dishes
         </p>
 
         <div class="menu-grid" data-menu-grid>
