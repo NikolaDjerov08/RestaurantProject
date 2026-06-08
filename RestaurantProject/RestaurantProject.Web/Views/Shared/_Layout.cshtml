@@ -1,0 +1,117 @@
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var cartCount = Context.Items.TryGetValue("CartCount", out var cc) ? cc : null;
+    var aftokens = Antiforgery.GetAndStoreTokens(Context);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="@aftokens.RequestToken" />
+    <title>@ViewData["Title"] · Lumière</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg site-nav">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Lumière<span class="dot">.</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Menu" asp-action="Index">Menu</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Reservation" asp-action="Create">Reservations</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (User.IsInRole(RoleConstants.Admin) || User.IsInRole(RoleConstants.Employee))
+                    {
+                        <li class="nav-item"><a class="nav-link text-gold" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a></li>
+                    }
+                </ul>
+                <ul class="navbar-nav align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Cart" asp-action="Index" id="navCartLink">
+                            Cart<span class="cart-badge" id="navCartBadge" style="@(cartCount is int n && n > 0 ? "" : "display:none;")">@(cartCount is int c ? c : 0)</span>
+                        </a>
+                    </li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @User.Identity?.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index">My profile</a></li>
+                                <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">My orders</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="px-2">
+                                        <button type="submit" class="btn btn-ghost btn-sm w-100">Sign out</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Sign in</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-gold btn-sm" asp-controller="Account" asp-action="Register">Register</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    @if (TempData["Success"] != null || TempData["Error"] != null || TempData["Info"] != null)
+    {
+        <div class="toast-stack" id="serverToasts">
+            @if (TempData["Success"] != null) { <div class="app-toast success">@TempData["Success"]</div> }
+            @if (TempData["Error"] != null)   { <div class="app-toast error">@TempData["Error"]</div> }
+            @if (TempData["Info"] != null)    { <div class="app-toast">@TempData["Info"]</div> }
+        </div>
+    }
+
+    @RenderBody()
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row gy-3">
+                <div class="col-md-5">
+                    <div class="brand">Lumière<span class="dot">.</span></div>
+                    <p class="mt-2 mb-0">Modern European dining. Seasonal menus, considered wine, warm rooms.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="text-gold" style="font-size:1.1rem;">Hours</h5>
+                    <p class="mb-0">Tue–Sun · 17:00–23:00<br>Closed Mondays</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-gold" style="font-size:1.1rem;">Find us</h5>
+                    <p class="mb-0">123 Main Street<br>Sofia, Bulgaria</p>
+                </div>
+            </div>
+            <hr class="divider-line" />
+            <div class="text-center text-faint" style="font-size:.82rem;">
+                © @DateTime.Now.Year Lumière. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/cart-ajax.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

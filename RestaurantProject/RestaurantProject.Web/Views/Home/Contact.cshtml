@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<div class="page-head">
+    <span class="gold-rule">Get in touch</span>
+    <h1>Contact</h1>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-5">
+            <div class="panel p-4 h-100">
+                <h3 class="text-gold" style="font-size:1.3rem;">Visit</h3>
+                <p class="text-muted-2 mb-1">123 Main Street</p>
+                <p class="text-muted-2">Sofia, Bulgaria</p>
+                <h3 class="text-gold mt-4" style="font-size:1.3rem;">Hours</h3>
+                <p class="text-muted-2 mb-0">Tue–Sun · 17:00–23:00<br>Closed Mondays</p>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel p-4 h-100">
+                <h3 class="text-gold" style="font-size:1.3rem;">Reach us</h3>
+                <p class="text-muted-2 mb-1">Phone · +359 2 000 0000</p>
+                <p class="text-muted-2">Email · hello@@lumiere.example</p>
+                <h3 class="text-gold mt-4" style="font-size:1.3rem;">Bookings</h3>
+                <p class="text-muted-2 mb-3">Reserve a table online any time.</p>
+                <a class="btn btn-outline-gold" asp-controller="Reservation" asp-action="Create">Reserve a table</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+@model Restaurant.Web.Models.Cart.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="page-head">
+    <span class="gold-rule">Almost there</span>
+    <h1>Checkout</h1>
+</div>
+
+<div class="container pb-5">
+    <form asp-controller="Order" asp-action="Checkout" method="post">
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors mb-3"></div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="panel p-4 mb-4">
+                    <h3 style="font-size:1.4rem;">Your order</h3>
+                    <hr class="divider-line" />
+                    @foreach (var item in Model.Cart.Items)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>@item.Quantity × @item.Name</span>
+                            <span class="text-gold">$@item.Subtotal.ToString("0.00")</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="panel p-4">
+                    <h3 style="font-size:1.4rem;">Details</h3>
+                    <hr class="divider-line" />
+                    <div class="mb-3">
+                        <label asp-for="DeliveryAddress" class="form-label"></label>
+                        <input asp-for="DeliveryAddress" class="form-control" placeholder="Where should we deliver?" />
+                        <span asp-validation-for="DeliveryAddress" class="field-validation-error text-danger"></span>
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="Notes" class="form-label"></label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Allergies, preferences…"></textarea>
+                        <span asp-validation-for="Notes" class="field-validation-error text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="cart-summary">
+                    <h3 style="font-size:1.4rem;">Summary</h3>
+                    <hr class="divider-line" />
+                    <div class="line"><span>Items</span><span>@Model.Cart.ItemCount</span></div>
+                    <div class="line"><span>Subtotal</span><span>$@Model.Cart.Total.ToString("0.00")</span></div>
+                    <div class="total"><span>Total</span><span class="amt">$@Model.Cart.Total.ToString("0.00")</span></div>
+
+                    <button type="submit" class="btn btn-gold w-100 mt-4">Place order</button>
+                    <a class="btn btn-ghost w-100 mt-2" asp-controller="Cart" asp-action="Index">Back to cart</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

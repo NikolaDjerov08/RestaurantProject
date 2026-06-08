@@ -1,0 +1,165 @@
+@model Restaurant.Web.Models.Menu.MenuIndexViewModel
+@{
+    ViewData["Title"] = "Menu";
+    var page = Model.Page;
+}
+
+<div class="page-head">
+    <span class="gold-rule">Our offering</span>
+    <h1>The menu</h1>
+    <p>Search, filter by course, and add anything to your cart.</p>
+</div>
+
+<div class="container pb-5">
+
+    <div class="filter-bar">
+        <form method="get" asp-controller="Menu" asp-action="Index" id="filterForm">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label" for="SearchTerm">Search</label>
+                    <input type="text" class="form-control" id="SearchTerm" name="SearchTerm"
+                           value="@Model.SearchTerm" placeholder="Search dishes…" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="Sorting">Sort by</label>
+                    <select class="form-select" id="Sorting" name="Sorting" onchange="document.getElementById('filterForm').submit()">
+                        @foreach (var opt in Model.SortOptions)
+                        {
+                            if (opt.Value == Model.Sorting)
+                            {
+                                <option value="@((int)opt.Value)" selected>@opt.Label</option>
+                            }
+                            else
+                            {
+                                <option value="@((int)opt.Value)">@opt.Label</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-gold">Apply</button>
+                </div>
+            </div>
+
+            <input type="hidden" name="CategoryId" id="CategoryId" value="@Model.CategoryId" />
+
+            <div class="category-pills mt-3">
+                <a class="category-pill @(Model.CategoryId == null ? "active" : "")" data-category-id=""
+                   asp-controller="Menu" asp-action="Index"
+                   asp-route-SearchTerm="@Model.SearchTerm"
+                   asp-route-Sorting="@((int)Model.Sorting)">All</a>
+                @foreach (var cat in Model.Categories)
+                {
+                    <a class="category-pill @(Model.CategoryId == cat.Id ? "active" : "")" data-category-id="@cat.Id"
+                       asp-controller="Menu" asp-action="Index"
+                       asp-route-CategoryId="@cat.Id"
+                       asp-route-SearchTerm="@Model.SearchTerm"
+                       asp-route-Sorting="@((int)Model.Sorting)">@cat.Name</a>
+                }
+            </div>
+        </form>
+    </div>
+
+    @if (page.TotalCount == 0)
+    {
+        <div class="empty-state">
+            <div class="big">Nothing on the menu matches</div>
+            <p>Try clearing the search or choosing a different course.</p>
+            <a class="btn btn-outline-gold mt-2" asp-controller="Menu" asp-action="Index">Reset filters</a>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted-2 mb-3" style="font-size:.9rem;" data-menu-status>
+            Showing @((page.CurrentPage - 1) * page.PageSize + 1)–@(Math.Min(page.CurrentPage * page.PageSize, page.TotalCount)) of @page.TotalCount dishes
+        </p>
+
+        <div class="menu-grid" data-menu-grid>
+            @{ var delay = 0; }
+            @foreach (var item in page.Items)
+            {
+                <article class="food-card" style="animation-delay:@(delay)ms">
+                    <a asp-controller="Menu" asp-action="Details" asp-route-id="@item.Id" class="img-wrap d-block">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Name" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="no-img">@item.Name</div>
+                        }
+                        <span class="cat-tag">@item.CategoryName</span>
+                    </a>
+                    <div class="body">
+                        <h3>
+                            <a asp-controller="Menu" asp-action="Details" asp-route-id="@item.Id"
+                               style="color:var(--text);">@item.Name</a>
+                        </h3>
+                        <p class="desc">@item.Description</p>
+                        <div class="row">
+                            <span class="price">$@item.Price.ToString("0.00")</span>
+                            <form asp-controller="Cart" asp-action="Add" method="post"
+                                  asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
+                                <input type="hidden" name="menuItemId" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-outline-gold btn-sm">Add to cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+                delay += 60;
+            }
+        </div>
+
+        <nav class="pager" data-menu-pager>
+        @if (page.TotalPages > 1)
+        {
+                @if (page.HasPrevious)
+                {
+                    <a asp-controller="Menu" asp-action="Index"
+                       asp-route-CurrentPage="@(page.CurrentPage - 1)"
+                       asp-route-SearchTerm="@Model.SearchTerm"
+                       asp-route-CategoryId="@Model.CategoryId"
+                       asp-route-Sorting="@((int)Model.Sorting)">‹ Prev</a>
+                }
+                else
+                {
+                    <span class="disabled">‹ Prev</span>
+                }
+
+                @for (int i = 1; i <= page.TotalPages; i++)
+                {
+                    if (i == page.CurrentPage)
+                    {
+                        <span class="current">@i</span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Menu" asp-action="Index"
+                           asp-route-CurrentPage="@i"
+                           asp-route-SearchTerm="@Model.SearchTerm"
+                           asp-route-CategoryId="@Model.CategoryId"
+                           asp-route-Sorting="@((int)Model.Sorting)">@i</a>
+                    }
+                }
+
+                @if (page.HasNext)
+                {
+                    <a asp-controller="Menu" asp-action="Index"
+                       asp-route-CurrentPage="@(page.CurrentPage + 1)"
+                       asp-route-SearchTerm="@Model.SearchTerm"
+                       asp-route-CategoryId="@Model.CategoryId"
+                       asp-route-Sorting="@((int)Model.Sorting)">Next ›</a>
+                }
+                else
+                {
+                    <span class="disabled">Next ›</span>
+                }
+        }
+        </nav>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/menu-ajax.js" asp-append-version="true"></script>
+}

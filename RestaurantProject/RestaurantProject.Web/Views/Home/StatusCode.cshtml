@@ -1,0 +1,13 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = $"Error {Model.StatusCode}";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card text-center">
+        <div class="text-center mb-3"><span class="gold-rule">@Model.StatusCode</span></div>
+        <h1 style="font-size:3.5rem;">@Model.StatusCode</h1>
+        <p class="auth-sub">@Model.Message</p>
+        <a class="btn btn-outline-gold" asp-controller="Home" asp-action="Index">Back to home</a>
+    </div>
+</div>

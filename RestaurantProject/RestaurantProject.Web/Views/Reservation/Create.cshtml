@@ -1,0 +1,44 @@
+@model Restaurant.Core.Models.Reservations.ReservationFormModel
+@{
+    ViewData["Title"] = "Reserve a table";
+}
+
+<div class="page-head">
+    <span class="gold-rule">Join us</span>
+    <h1>Reserve a table</h1>
+    <p>Tell us when you'd like to visit and how many will be dining.</p>
+</div>
+
+<div class="container-narrow pb-5">
+    <div class="panel p-4 p-md-5">
+        <form asp-controller="Reservation" asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="ReservationDate" class="form-label"></label>
+                <input asp-for="ReservationDate" type="datetime-local" class="form-control" />
+                <span asp-validation-for="ReservationDate" class="field-validation-error text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="GuestsCount" class="form-label"></label>
+                <input asp-for="GuestsCount" type="number" min="1" max="30" class="form-control" />
+                <span asp-validation-for="GuestsCount" class="field-validation-error text-danger"></span>
+            </div>
+            <div class="mb-2">
+                <label asp-for="SpecialRequest" class="form-label"></label>
+                <textarea asp-for="SpecialRequest" class="form-control" rows="3"
+                          placeholder="Window table, dietary needs, celebrating something…"></textarea>
+                <span asp-validation-for="SpecialRequest" class="field-validation-error text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-gold">Request reservation</button>
+                <a class="btn btn-ghost" asp-controller="Reservation" asp-action="Index">My reservations</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

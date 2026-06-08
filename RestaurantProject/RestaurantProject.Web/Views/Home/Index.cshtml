@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero">
+    <div class="hero-inner">
+        <span class="gold-rule">Est. 2024 · Sofia</span>
+        <h1>An evening at <span class="accent">Lumière</span></h1>
+        <p>Modern European dining built around seasonal produce, a short considered menu, and unhurried evenings.</p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+            <a class="btn btn-gold" asp-controller="Menu" asp-action="Index">Explore the menu</a>
+            <a class="btn btn-outline-gold" asp-controller="Reservation" asp-action="Create">Reserve a table</a>
+        </div>
+    </div>
+    <div class="scroll-hint">SCROLL</div>
+</section>
+
+<section class="feature-strip">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-4 feat">
+                <h3>Seasonal</h3>
+                <p>Our menu shifts with what's good that week.</p>
+            </div>
+            <div class="col-md-4 feat">
+                <h3>Considered</h3>
+                <p>A short list, every plate earning its place.</p>
+            </div>
+            <div class="col-md-4 feat">
+                <h3>Warm</h3>
+                <p>Low light, good wine, a room to linger in.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container pb-5">
+    <div class="section-head">
+        <span class="gold-rule">Tonight</span>
+        <h2>From the kitchen</h2>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-outline-gold" asp-controller="Menu" asp-action="Index">View the full menu</a>
+    </div>
+</section>

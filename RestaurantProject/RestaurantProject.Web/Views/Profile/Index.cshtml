@@ -1,0 +1,53 @@
+@model UserServiceModel
+@{
+    ViewData["Title"] = "My profile";
+}
+
+<div class="page-head">
+    <span class="gold-rule">Account</span>
+    <h1>My profile</h1>
+</div>
+
+<div class="container-narrow pb-5">
+    <div class="panel p-4 p-md-5">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            @if (!string.IsNullOrEmpty(Model.ProfileImageUrl))
+            {
+                <img src="@Model.ProfileImageUrl" alt="Profile" class="rounded-circle" style="width:72px;height:72px;object-fit:cover;border:1px solid var(--line);" />
+            }
+            else
+            {
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                     style="width:72px;height:72px;background:var(--bg-elev);border:1px solid var(--line);font-family:var(--font-display);font-size:1.6rem;color:var(--gold);">
+                    @(string.IsNullOrEmpty(Model.FullName) ? "?" : Model.FullName.Trim()[0].ToString().ToUpper())
+                </div>
+            }
+            <div>
+                <h2 class="mb-0" style="font-size:1.6rem;">@Model.FullName</h2>
+                <span class="text-muted-2">@Model.Email</span>
+            </div>
+        </div>
+
+        <hr class="divider-line" />
+
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted-2 fw-normal">Address</dt>
+            <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Address) ? "—" : Model.Address)</dd>
+
+            <dt class="col-sm-4 text-muted-2 fw-normal">Roles</dt>
+            <dd class="col-sm-8">
+                @foreach (var role in Model.Roles)
+                {
+                    <span class="text-gold me-2">@role</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4 text-muted-2 fw-normal">Member since</dt>
+            <dd class="col-sm-8">@Model.CreatedOn.ToString("MMMM d, yyyy")</dd>
+        </dl>
+
+        <div class="mt-4">
+            <a class="btn btn-outline-gold" asp-controller="Profile" asp-action="Edit">Edit profile</a>
+        </div>
+    </div>
+</div>

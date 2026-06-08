@@ -1,0 +1,95 @@
+@model Restaurant.Core.Models.Cart.CartSummaryModel
+@{
+    ViewData["Title"] = "Your cart";
+}
+
+<div class="page-head">
+    <span class="gold-rule">Your selection</span>
+    <h1>Cart</h1>
+</div>
+
+<div class="container pb-5">
+    @if (Model.IsEmpty)
+    {
+        <div class="empty-state">
+            <div class="big">Your cart is empty</div>
+            <p>Browse the menu and add something you'll enjoy.</p>
+            <a class="btn btn-gold mt-2" asp-controller="Menu" asp-action="Index">Explore the menu</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <div class="col-lg-8" data-cart-page>
+                <div class="cart-table" data-cart-rows>
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="cart-row" data-row-id="@item.MenuItemId">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Name" class="thumb" />
+                            }
+                            else
+                            {
+                                <div class="thumb thumb-none">@item.Name.Substring(0, 1)</div>
+                            }
+
+                            <div>
+                                <div style="font-family:var(--font-display);font-size:1.25rem;">@item.Name</div>
+                                <div class="text-muted-2" style="font-size:.85rem;">
+                                    $@item.Price.ToString("0.00") each
+                                    @if (!item.IsAvailable)
+                                    {
+                                        <span class="text-danger">· now unavailable</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-flex align-items-center gap-1">
+                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" max="100"
+                                       class="form-control qty-input" style="width:72px;"
+                                       data-cart-qty data-menu-item-id="@item.MenuItemId" />
+                                <button type="submit" class="btn btn-ghost btn-sm" data-nojs-update title="Update">↻</button>
+                            </form>
+
+                            <div class="text-gold" data-row-subtotal style="font-family:var(--font-display);font-size:1.2rem;min-width:80px;text-align:right;">
+                                $@item.Subtotal.ToString("0.00")
+                            </div>
+
+                            <form asp-controller="Cart" asp-action="Remove" method="post">
+                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                <button type="submit" class="btn btn-ghost btn-sm" title="Remove"
+                                        data-cart-remove data-menu-item-id="@item.MenuItemId">✕</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <a class="btn btn-ghost" asp-controller="Menu" asp-action="Index">‹ Continue shopping</a>
+                    <form asp-controller="Cart" asp-action="Clear" method="post">
+                        <button type="submit" class="btn btn-ghost" data-cart-clear>Clear cart</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h3 style="font-size:1.4rem;">Order summary</h3>
+                    <hr class="divider-line" />
+                    <div class="line"><span>Items</span><span data-summary-count>@Model.ItemCount</span></div>
+                    <div class="line"><span>Subtotal</span><span data-summary-subtotal>$@Model.Total.ToString("0.00")</span></div>
+                    <div class="total"><span>Total</span><span class="amt" data-summary-total>$@Model.Total.ToString("0.00")</span></div>
+
+                    <a class="btn btn-gold w-100 mt-4" asp-controller="Order" asp-action="Checkout">
+                        Proceed to checkout
+                    </a>
+                    <p class="text-faint text-center mt-2 mb-0" style="font-size:.8rem;">
+                        You'll need to be signed in to place an order.
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

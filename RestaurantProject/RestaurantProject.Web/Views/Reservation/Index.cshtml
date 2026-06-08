@@ -1,0 +1,55 @@
+@model IReadOnlyList<Restaurant.Core.Models.Reservations.ReservationServiceModel>
+@{
+    ViewData["Title"] = "My reservations";
+}
+
+<div class="page-head">
+    <span class="gold-rule">Bookings</span>
+    <h1>My reservations</h1>
+</div>
+
+<div class="container-narrow pb-5" style="max-width:760px;">
+    <div class="text-center mb-4">
+        <a class="btn btn-gold" asp-controller="Reservation" asp-action="Create">New reservation</a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="big">No reservations yet</div>
+            <p>Book a table and it'll appear here.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var r in Model)
+        {
+            <div class="list-card">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div>
+                        <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);">
+                            @r.ReservationDate.ToString("MMMM d, yyyy")
+                        </div>
+                        <div class="text-muted-2" style="font-size:.9rem;">
+                            @r.ReservationDate.ToString("HH:mm") · @r.GuestsCount @(r.GuestsCount == 1 ? "guest" : "guests")
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(r.SpecialRequest))
+                        {
+                            <div class="text-faint mt-2" style="font-size:.85rem;">"@r.SpecialRequest"</div>
+                        }
+                    </div>
+                    <div>
+                        @if (r.IsConfirmed)
+                        {
+                            <span class="status-badge status-Confirmed">Confirmed</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-Pending">Pending</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
