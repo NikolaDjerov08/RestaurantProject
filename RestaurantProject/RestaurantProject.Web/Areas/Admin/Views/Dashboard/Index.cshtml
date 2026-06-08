@@ -1,0 +1,133 @@
+@model DashboardStatsModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var months = string.Join(",", Model.RevenueByMonth.Select(m => $"\"{m.Label}\""));
+    var revenues = string.Join(",", Model.RevenueByMonth.Select(m => m.Revenue.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+    var topNames = string.Join(",", Model.TopSellingItems.Select(t => $"\"{t.Name}\""));
+    var topUnits = string.Join(",", Model.TopSellingItems.Select(t => t.UnitsSold));
+}
+
+<h1>Dashboard</h1>
+<p class="text-muted-2 mb-4">An overview of activity across the restaurant.</p>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="label">Total revenue</div>
+        <div class="value gold">$@Model.TotalRevenue.ToString("N2")</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Last 30 days</div>
+        <div class="value">$@Model.RevenueLast30Days.ToString("N2")</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Orders</div>
+        <div class="value">@Model.TotalOrders</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Pending orders</div>
+        <div class="value">@Model.PendingOrders</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Reservations</div>
+        <div class="value">@Model.TotalReservations</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Upcoming</div>
+        <div class="value">@Model.UpcomingReservations</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Menu items</div>
+        <div class="value">@Model.TotalMenuItems</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Users</div>
+        <div class="value">@Model.TotalUsers</div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="chart-card">
+            <h3>Revenue (last 6 months)</h3>
+            @if (Model.RevenueByMonth.Count == 0)
+            {
+                <p class="text-muted-2">No revenue data yet.</p>
+            }
+            else
+            {
+                <canvas id="revenueChart" height="140"></canvas>
+            }
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="chart-card">
+            <h3>Top sellers</h3>
+            @if (Model.TopSellingItems.Count == 0)
+            {
+                <p class="text-muted-2">No sales yet.</p>
+            }
+            else
+            {
+                <canvas id="topChart" height="180"></canvas>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+        const gold = '#c9a24b';
+        const muted = '#9a958c';
+        const grid = 'rgba(255,255,255,0.06)';
+        Chart.defaults.color = muted;
+        Chart.defaults.font.family = "'Outfit', sans-serif";
+
+        const revEl = document.getElementById('revenueChart');
+        if (revEl) {
+            new Chart(revEl, {
+                type: 'line',
+                data: {
+                    labels: [@Html.Raw(months)],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [@Html.Raw(revenues)],
+                        borderColor: gold,
+                        backgroundColor: 'rgba(201,162,75,0.12)',
+                        fill: true, tension: 0.3, pointBackgroundColor: gold
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: grid }, ticks: { callback: v => '$' + v } },
+                        x: { grid: { color: grid } }
+                    }
+                }
+            });
+        }
+
+        const topEl = document.getElementById('topChart');
+        if (topEl) {
+            new Chart(topEl, {
+                type: 'bar',
+                data: {
+                    labels: [@Html.Raw(topNames)],
+                    datasets: [{
+                        label: 'Units sold',
+                        data: [@Html.Raw(topUnits)],
+                        backgroundColor: gold, borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: grid } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+    </script>
+}

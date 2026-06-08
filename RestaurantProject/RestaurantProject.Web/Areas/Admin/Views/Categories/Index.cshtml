@@ -1,0 +1,38 @@
+@model IReadOnlyList<CategoryServiceModel>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h1>Categories</h1>
+        <p class="text-muted-2 mb-0">@Model.Count categories.</p>
+    </div>
+    <a class="btn btn-gold" asp-area="Admin" asp-controller="Categories" asp-action="Create">+ New category</a>
+</div>
+
+<div class="table-wrap">
+    <table class="admin-table">
+        <thead>
+            <tr><th>Name</th><th>Menu items</th><th style="width:1%;">Actions</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var cat in Model)
+            {
+                <tr>
+                    <td>@cat.Name</td>
+                    <td class="text-muted-2">@cat.MenuItemCount</td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn btn-outline-gold btn-xs" asp-area="Admin" asp-controller="Categories" asp-action="Edit" asp-route-id="@cat.Id">Edit</a>
+                            <form asp-area="Admin" asp-controller="Categories" asp-action="Delete" asp-route-id="@cat.Id" method="post"
+                                  onsubmit="return confirm('Delete this category?');">
+                                <button type="submit" class="btn btn-danger-ghost btn-xs">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

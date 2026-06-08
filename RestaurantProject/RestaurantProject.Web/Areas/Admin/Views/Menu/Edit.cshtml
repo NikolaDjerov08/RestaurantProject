@@ -1,0 +1,54 @@
+@model MenuFormViewModel
+@{
+    ViewData["Title"] = "Edit menu item";
+}
+
+<h1>Edit menu item</h1>
+<p class="text-muted-2 mb-4">Update the details for this dish.</p>
+
+<div class="panel p-4 p-md-5" style="max-width:720px;">
+    <form asp-area="Admin" asp-controller="Menu" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Form.Name" class="form-label">Name</label>
+            <input asp-for="Form.Name" class="form-control" />
+            <span asp-validation-for="Form.Name" class="field-validation-error text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Form.Description" class="form-label">Description</label>
+            <textarea asp-for="Form.Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Form.Description" class="field-validation-error text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="Form.Price" class="form-label">Price</label>
+                <input asp-for="Form.Price" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Form.Price" class="field-validation-error text-danger"></span>
+            </div>
+            <div class="col-md-8 mb-3">
+                <label asp-for="Form.CategoryId" class="form-label">Category</label>
+                <select asp-for="Form.CategoryId" class="form-select" asp-items="Model.CategoryOptions">
+                    <option value="">Select a category…</option>
+                </select>
+                <span asp-validation-for="Form.CategoryId" class="field-validation-error text-danger"></span>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Form.ImageUrl" class="form-label">Image URL</label>
+            <input asp-for="Form.ImageUrl" class="form-control" placeholder="https://…" />
+            <span asp-validation-for="Form.ImageUrl" class="field-validation-error text-danger"></span>
+        </div>
+        <div class="form-check mb-4">
+            <input asp-for="Form.IsAvailable" class="form-check-input" />
+            <label asp-for="Form.IsAvailable" class="form-check-label">Available</label>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-gold">Save changes</button>
+            <a class="btn btn-ghost" asp-area="Admin" asp-controller="Menu" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

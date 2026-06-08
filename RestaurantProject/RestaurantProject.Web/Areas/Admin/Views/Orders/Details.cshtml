@@ -1,0 +1,60 @@
+@model OrderServiceModel
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
+    var statuses = Enum.GetValues<OrderStatus>();
+}
+
+<a class="text-muted-2" asp-area="Admin" asp-controller="Orders" asp-action="Index" style="font-size:.9rem;">‹ All orders</a>
+<h1 class="mt-2">Order #@Model.Id</h1>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-7">
+        <div class="panel p-4">
+            <div class="d-flex justify-content-between mb-3">
+                <div>
+                    <div class="text-muted-2" style="font-size:.85rem;">Customer</div>
+                    <div>@Model.UserFullName</div>
+                    <div class="text-faint" style="font-size:.85rem;">@Model.UserEmail</div>
+                </div>
+                <span class="status-badge status-@Model.Status">@Model.Status</span>
+            </div>
+            <hr class="divider-line" />
+            @foreach (var item in Model.Items)
+            {
+                <div class="d-flex justify-content-between mb-2">
+                    <span>@item.Quantity × @item.MenuItemName</span>
+                    <span class="text-gold">$@item.Subtotal.ToString("0.00")</span>
+                </div>
+            }
+            <div class="total" style="display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:1rem;margin-top:1rem;font-family:var(--font-display);font-size:1.4rem;">
+                <span>Total</span><span class="text-gold">$@Model.TotalPrice.ToString("0.00")</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="panel p-4">
+            <h3 style="font-size:1.3rem;">Update status</h3>
+            <hr class="divider-line" />
+            <form asp-area="Admin" asp-controller="Orders" asp-action="UpdateStatus" asp-route-id="@Model.Id" method="post">
+                <select name="status" class="form-select mb-3">
+                    @foreach (var s in statuses)
+                    {
+                        if (s == Model.Status)
+                        {
+                            <option value="@s" selected>@s</option>
+                        }
+                        else
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-gold w-100">Save status</button>
+            </form>
+            <div class="text-muted-2 mt-3" style="font-size:.85rem;">
+                Placed @Model.OrderDate.ToLocalTime().ToString("MMMM d, yyyy · HH:mm")
+            </div>
+        </div>
+    </div>
+</div>

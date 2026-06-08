@@ -1,0 +1,95 @@
+@using Microsoft.AspNetCore.Identity
+@using Restaurant.Core.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var aftokens = Antiforgery.GetAndStoreTokens(Context);
+    string Active(string controller) =>
+        string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+            ? "active" : "";
+    var isAdmin = User.IsInRole(RoleConstants.Admin);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="@aftokens.RequestToken" />
+    <title>@ViewData["Title"] · Admin · Lumière</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="admin-shell" id="adminShell">
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="brand">Lumière<span class="dot">.</span></div>
+            <div class="tag">Admin</div>
+            <nav class="admin-nav">
+                <a class="@Active("Dashboard")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+
+                <div class="group-label">Catalogue</div>
+                <a class="@Active("Menu")" asp-area="Admin" asp-controller="Menu" asp-action="Index">Menu items</a>
+                <a class="@Active("Categories")" asp-area="Admin" asp-controller="Categories" asp-action="Index">Categories</a>
+
+                <div class="group-label">Operations</div>
+                <a class="@Active("Orders")" asp-area="Admin" asp-controller="Orders" asp-action="Index">Orders</a>
+                <a class="@Active("Reservations")" asp-area="Admin" asp-controller="Reservations" asp-action="Index">Reservations</a>
+
+                @if (isAdmin)
+                {
+                    <div class="group-label">Administration</div>
+                    <a class="@Active("Users")" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a>
+                }
+            </nav>
+        </aside>
+
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <button class="btn btn-ghost btn-sm d-lg-none" id="sidebarToggle">☰ Menu</button>
+                <div class="ms-auto d-flex align-items-center gap-3">
+                    <a class="text-muted-2" asp-area="" asp-controller="Home" asp-action="Index" style="font-size:.9rem;">↗ View site</a>
+                    <span class="text-muted-2" style="font-size:.9rem;">@User.Identity?.Name</span>
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-ghost btn-sm">Sign out</button>
+                    </form>
+                </div>
+            </div>
+
+            @if (TempData["Success"] != null || TempData["Error"] != null || TempData["Info"] != null)
+            {
+                <div class="toast-stack">
+                    @if (TempData["Success"] != null) { <div class="app-toast success">@TempData["Success"]</div> }
+                    @if (TempData["Error"] != null)   { <div class="app-toast error">@TempData["Error"]</div> }
+                    @if (TempData["Info"] != null)    { <div class="app-toast">@TempData["Info"]</div> }
+                </div>
+            }
+
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            var toggle = document.getElementById('sidebarToggle');
+            var sidebar = document.getElementById('adminSidebar');
+            var shell = document.getElementById('adminShell');
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    sidebar.classList.toggle('open');
+                    shell.classList.toggle('menu-open');
+                });
+            }
+        })();
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,40 @@
+@model IReadOnlyList<UserServiceModel>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>Users</h1>
+<p class="text-muted-2 mb-4">@Model.Count active users.</p>
+
+<div class="table-wrap">
+    <table class="admin-table">
+        <thead>
+            <tr><th>Name</th><th>Email</th><th>Roles</th><th>Joined</th><th style="width:1%;">Actions</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.FullName</td>
+                    <td class="text-muted-2">@u.Email</td>
+                    <td>
+                        @foreach (var role in u.Roles)
+                        {
+                            <span class="text-gold me-2" style="font-size:.85rem;">@role</span>
+                        }
+                    </td>
+                    <td class="text-muted-2">@u.CreatedOn.ToString("MMM d, yyyy")</td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn btn-outline-gold btn-xs" asp-area="Admin" asp-controller="Users" asp-action="Roles" asp-route-id="@u.Id">Roles</a>
+                            <form asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@u.Id" method="post"
+                                  onsubmit="return confirm('Deactivate this user?');">
+                                <button type="submit" class="btn btn-danger-ghost btn-xs">Deactivate</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

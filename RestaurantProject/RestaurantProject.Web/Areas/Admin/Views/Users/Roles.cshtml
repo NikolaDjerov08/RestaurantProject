@@ -1,0 +1,35 @@
+@model UserRolesViewModel
+@{
+    ViewData["Title"] = "Manage roles";
+}
+
+<a class="text-muted-2" asp-area="Admin" asp-controller="Users" asp-action="Index" style="font-size:.9rem;">‹ All users</a>
+<h1 class="mt-2">Manage roles</h1>
+<p class="text-muted-2 mb-4">@Model.User.FullName · @Model.User.Email</p>
+
+<div class="panel p-4 p-md-5" style="max-width:560px;">
+    @foreach (var role in Model.AllRoles)
+    {
+        var hasRole = Model.User.Roles.Contains(role);
+        <div class="d-flex justify-content-between align-items-center py-3" style="border-bottom:1px solid var(--line);">
+            <div>
+                <div style="font-size:1.1rem;">@role</div>
+                <div class="text-faint" style="font-size:.82rem;">@(hasRole ? "Assigned" : "Not assigned")</div>
+            </div>
+            @if (hasRole)
+            {
+                <form asp-area="Admin" asp-controller="Users" asp-action="RemoveRole" asp-route-id="@Model.User.Id" method="post">
+                    <input type="hidden" name="role" value="@role" />
+                    <button type="submit" class="btn btn-danger-ghost btn-xs">Remove</button>
+                </form>
+            }
+            else
+            {
+                <form asp-area="Admin" asp-controller="Users" asp-action="AssignRole" asp-route-id="@Model.User.Id" method="post">
+                    <input type="hidden" name="role" value="@role" />
+                    <button type="submit" class="btn btn-outline-gold btn-xs">Add</button>
+                </form>
+            }
+        </div>
+    }
+</div>
