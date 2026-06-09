@@ -1,4 +1,4 @@
-// Lumière — AJAX menu filtering (progressive enhancement)
+// Jerry's — AJAX menu filtering (progressive enhancement)
 
 (function () {
     'use strict';

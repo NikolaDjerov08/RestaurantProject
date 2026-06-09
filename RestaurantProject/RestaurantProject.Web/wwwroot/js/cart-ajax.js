@@ -1,4 +1,4 @@
-// Lumière — AJAX cart (progressive enhancement over the server-rendered forms)
+// Jerry's — AJAX cart (progressive enhancement over the server-rendered forms)
 
 (function () {
     'use strict';
