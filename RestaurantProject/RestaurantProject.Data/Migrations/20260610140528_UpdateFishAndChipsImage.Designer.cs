@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restaurant.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Restaurant.Infrastructure.Data;
 namespace Restaurant.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260610140528_UpdateFishAndChipsImage")]
+    partial class UpdateFishAndChipsImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -405,28 +408,6 @@ namespace Restaurant.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = 33,
-                            CategoryId = 1,
-                            Description = "Crispy golden battered onion rings served with a dipping sauce.",
-                            ImageUrl = "/images/menu/onion-rings.jpg",
-                            IsAvailable = true,
-                            IsDeleted = false,
-                            Name = "Onion Rings",
-                            Price = 5.50m
-                        },
-                        new
-                        {
-                            Id = 34,
-                            CategoryId = 1,
-                            Description = "Thick-cut, golden, crispy fries with sea salt.",
-                            ImageUrl = "/images/menu/fries.jpg",
-                            IsAvailable = true,
-                            IsDeleted = false,
-                            Name = "Fries",
-                            Price = 4.00m
-                        },
-                        new
-                        {
                             Id = 3,
                             CategoryId = 2,
                             Description = "Atlantic salmon, lemon-butter glaze, served with seasonal vegetables.",
@@ -517,11 +498,11 @@ namespace Restaurant.Infrastructure.Migrations
                         {
                             Id = 8,
                             CategoryId = 3,
-                            Description = "Rich, moist chocolate cake layered with silky chocolate ganache.",
-                            ImageUrl = "/images/menu/chocolate-cake.jpg",
+                            Description = "Warm dark-chocolate cake with a molten centre, served with vanilla ice cream.",
+                            ImageUrl = "/images/menu/lava.jpg",
                             IsAvailable = true,
                             IsDeleted = false,
-                            Name = "Chocolate Cake",
+                            Name = "Chocolate Lava Cake",
                             Price = 8.50m
                         },
                         new
@@ -572,11 +553,11 @@ namespace Restaurant.Infrastructure.Migrations
                         {
                             Id = 10,
                             CategoryId = 4,
-                            Description = "Chilled bottled mineral water.",
-                            ImageUrl = "/images/menu/water.jpg",
+                            Description = "Chilled sparkling mineral water with lemon.",
+                            ImageUrl = "/images/menu/sparkling.jpg",
                             IsAvailable = true,
                             IsDeleted = false,
-                            Name = "Water",
+                            Name = "Sparkling Water",
                             Price = 3.00m
                         },
                         new
