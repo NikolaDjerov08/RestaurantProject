@@ -94,14 +94,19 @@ using (var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
+    // Full diagnostics for unhandled exceptions (500) while developing
+    app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
 else
 {
+    // Production: route unhandled exceptions to the custom error page
     app.UseExceptionHandler("/Home/Error");
-    app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
     app.UseHsts();
 }
+
+// Custom error pages for status codes (400, 401, 403, 404, ...) in ALL environments
+app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

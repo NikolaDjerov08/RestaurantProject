@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Code-coverage settings for the unit tests.
+  Coverage is measured on the BUSINESS LOGIC (the service layer), which is what
+  the unit tests target. Pure data/configuration code (entities, DTOs, view and
+  service models, EF Fluent configurations, migrations, the DbContext and
+  Program.cs) is excluded because it contains no branching logic to test.
+
+  Run with:  dotnet test  (settings) coverage.runsettings
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <!-- Measure only the service layer (the business logic) -->
+          <Include>[RestaurantProject.Data]Restaurant.Infrastructure.Services.*</Include>
+          <ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute,ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
